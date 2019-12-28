@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UWPX-Installer", "UWPX-Installer.csproj", "{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D08C3CA-432C-472F-AF49-4EA2EF68606F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|x64.ActiveCfg = Debug|x64
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|x64.Build.0 = Debug|x64
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|x86.ActiveCfg = Debug|x86
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Debug|x86.Build.0 = Debug|x86
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|x64.ActiveCfg = Release|x64
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|x64.Build.0 = Release|x64
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|x86.ActiveCfg = Release|x86
+		{25300DFE-A97F-4CCB-B76A-4B39F66D5E00}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE84BCD6-D84E-4A9E-A334-C1456F27C045}
+	EndGlobalSection
+EndGlobal

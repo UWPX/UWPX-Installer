@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>UWPX_Installer</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>UWPX_Installer.App</StartupObject>
+    <ApplicationIcon>UWPX.ico</ApplicationIcon>
+    <Authors>Fabian Sauter</Authors>
+    <Company>UWPX</Company>
+    <Product>UWPX Installer</Product>
+    <Description>An installer for the UWPX app.</Description>
+    <Copyright>2020 Fabian Sauter</Copyright>
+    <PackageProjectUrl>https://uwpx.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/UWPX/UWPX-Client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>UWPX.png</PackageIcon>
+    <PackageIconUrl />
+    <NeutralLanguage>en</NeutralLanguage>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\UWPX.png" />
+    <None Remove="Resources\UWPX.appxbundle" />
+    <None Remove="Resources\UWPX.cer" />
+    <None Include="..\UWPX-Installer_old\UWPX-Installer\Assets\UWPX.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\UWPX.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\UWPX.appxbundle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\UWPX.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Classes\" />
+  </ItemGroup>
+
+</Project>
