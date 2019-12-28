@@ -78,7 +78,6 @@ namespace Installer.Classes
                     SetState(AppxInstallerState.ERROR, e);
                     return;
                 }
-                SetState(AppxInstallerState.SUCCESS);
             });
         }
 
@@ -105,7 +104,6 @@ namespace Installer.Classes
                     SetState(AppxInstallerState.ERROR, e);
                     return;
                 }
-                SetState(AppxInstallerState.SUCCESS);
             });
         }
 
@@ -145,9 +143,7 @@ namespace Installer.Classes
                 pkgManager = new PackageManager();
             }
             operation = pkgManager.AddPackageAsync(new Uri(APPX_BUNDLE_PATH), null, DeploymentOptions.ForceTargetApplicationShutdown);
-
-            operation.Progress = (op, progress) => ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(progress));
-            operation.Completed = (op, result) => InstallationComplete?.Invoke(this, new InstallationCompleteEventArgs(op.GetResults()));
+            HandleOperation();
         }
 
         /// <summary>
@@ -162,9 +158,24 @@ namespace Installer.Classes
                 pkgManager = new PackageManager();
             }
             operation = pkgManager.UpdatePackageAsync(new Uri(APPX_BUNDLE_PATH), null, DeploymentOptions.ForceTargetApplicationShutdown);
+            HandleOperation();
+        }
 
+        private void HandleOperation()
+        {
             operation.Progress = (op, progress) => ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(progress));
-            operation.Completed = (op, result) => InstallationComplete?.Invoke(this, new InstallationCompleteEventArgs(op.GetResults()));
+            operation.Completed = (op, result) =>
+            {
+                InstallationComplete?.Invoke(this, new InstallationCompleteEventArgs(op.GetResults()));
+                if (op.GetResults().IsRegistered)
+                {
+                    SetState(AppxInstallerState.SUCCESS);
+                }
+                else
+                {
+                    SetState(AppxInstallerState.CANCELED);
+                }
+            };
         }
 
         #endregion

@@ -1,8 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using Installer.Classes;
 using Installer.Classes.Events;
+using Windows.System;
 
 namespace UWPX_Installer
 {
@@ -12,6 +15,7 @@ namespace UWPX_Installer
         #region --Attributes--
         private static string UWPX_CERTIFICATE_PATH = GetResourcePath("Resources/UWPX.cer");
         private static string UWPX_APPX_BUNDLE_PATH = GetResourcePath("Resources/UWPX.appxbundle");
+        private const string UWPX_FAMILY_NAME = "790FabianSauter.UWPXAlpha_s1c5dt7qckd0e";
 
         private AppxInstaller installer;
 
@@ -69,6 +73,23 @@ namespace UWPX_Installer
             });
         }
 
+        private async Task LauchUwpxAsync()
+        {
+            UpdateProgressInvoke(100, "Launching UWPX...");
+            LauncherOptions options = new LauncherOptions
+            {
+                TargetApplicationPackageFamilyName = UWPX_FAMILY_NAME
+            };
+            if (await Launcher.LaunchUriAsync(new Uri("xmpp:"), options))
+            {
+                UpdateProgressInvoke(100, "Done");
+            }
+            else
+            {
+                UpdateProgressInvoke(100, "Failed to launch UWPX");
+            }
+        }
+
         #endregion
 
         #region --Misc Methods (Protected)--
@@ -106,18 +127,27 @@ namespace UWPX_Installer
             Dispatcher.Invoke(() => install_btn.IsEnabled = true);
         }
 
-        private void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args)
+        private async void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args)
         {
             if (args.STATE == AppxInstallerState.ERROR)
             {
                 UpdateProgressInvoke(100, "Installation failed with a fatal error: " + (args.EXCEPTION is null ? "null" : args.EXCEPTION.Message));
                 Dispatcher.Invoke(() => install_btn.IsEnabled = true);
             }
+            else if (args.STATE == AppxInstallerState.SUCCESS && Dispatcher.Invoke(() => startOnceDone_chbx.IsChecked) == true)
+            {
+                await LauchUwpxAsync();
+            }
         }
 
         private void OnInstallProgressChanged(AppxInstaller sender, ProgressChangedEventArgs args)
         {
-            UpdateProgressInvoke(args.PROGRESS.percentage * 100, args.PROGRESS.state.ToString());
+            UpdateProgressInvoke(args.PROGRESS.percentage, args.PROGRESS.state.ToString());
+        }
+
+        private async void Lauch_btn_Click(object sender, RoutedEventArgs e)
+        {
+            await LauchUwpxAsync();
         }
 
         #endregion
