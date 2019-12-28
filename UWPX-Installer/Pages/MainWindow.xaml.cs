@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Windows;
 using Installer.Classes;
 using Installer.Classes.Events;
@@ -9,8 +10,8 @@ namespace UWPX_Installer
     {
         //--------------------------------------------------------Attributes:-----------------------------------------------------------------\\
         #region --Attributes--
-        private static string UWPX_CERTIFICATE_PATH = Path.GetFullPath("Resources/UWPX.cer");
-        private static string UWPX_APPX_BUNDLE_PATH = Path.GetFullPath("Resources/UWPX.appxbundle");
+        private static string UWPX_CERTIFICATE_PATH = GetResourcePath("Resources/UWPX.cer");
+        private static string UWPX_APPX_BUNDLE_PATH = GetResourcePath("Resources/UWPX.appxbundle");
 
         private AppxInstaller installer;
 
@@ -25,7 +26,10 @@ namespace UWPX_Installer
         #endregion
         //--------------------------------------------------------Set-, Get- Methods:---------------------------------------------------------\\
         #region --Set-, Get- Methods--
-
+        private static string GetResourcePath(string filePath)
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), filePath);
+        }
 
         #endregion
         //--------------------------------------------------------Misc Methods:---------------------------------------------------------------\\
@@ -102,7 +106,14 @@ namespace UWPX_Installer
             Dispatcher.Invoke(() => install_btn.IsEnabled = true);
         }
 
-        private void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args) { }
+        private void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args)
+        {
+            if (args.STATE == AppxInstallerState.ERROR)
+            {
+                UpdateProgressInvoke(100, "Installation failed with a fatal error: " + (args.EXCEPTION is null ? "null" : args.EXCEPTION.Message));
+                Dispatcher.Invoke(() => install_btn.IsEnabled = true);
+            }
+        }
 
         private void OnInstallProgressChanged(AppxInstaller sender, ProgressChangedEventArgs args)
         {
