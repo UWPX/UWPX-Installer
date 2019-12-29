@@ -35,7 +35,7 @@ namespace UWPX_Installer
         #region --Set-, Get- Methods--
         private static string GetResourcePath(string filePath)
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Path.Combine("Resources", filePath));
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Resources", filePath);
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace UWPX_Installer
         private void PrepInstaller()
         {
             install_btn.IsEnabled = false;
-            installer = new AppxInstaller(info.appxBundlePath, info.certPath);
+            installer = new AppxInstaller(GetResourcePath(info.appxBundlePath), GetResourcePath(info.certPath));
             installer.ProgressChanged += OnInstallProgressChanged;
             installer.StateChanged += OnInstallStateChanged;
             installer.InstallationComplete += OnInstallComplete;
