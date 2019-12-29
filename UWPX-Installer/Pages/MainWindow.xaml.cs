@@ -3,8 +3,11 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using Installer.Classes;
 using Installer.Classes.Events;
+using Newtonsoft.Json;
+using UWPX_Installer.Classes;
 using Windows.System;
 
 namespace UWPX_Installer
@@ -13,9 +16,8 @@ namespace UWPX_Installer
     {
         //--------------------------------------------------------Attributes:-----------------------------------------------------------------\\
         #region --Attributes--
-        private static string UWPX_CERTIFICATE_PATH = GetResourcePath("Resources/UWPX.cer");
-        private static string UWPX_APPX_BUNDLE_PATH = GetResourcePath("Resources/UWPX.appxbundle");
-        private const string UWPX_FAMILY_NAME = "790FabianSauter.UWPXAlpha_s1c5dt7qckd0e";
+        private static string APPX_INFO_PATH = GetResourcePath("ReleaseInfo.json");
+        private ReleaseInfo info;
 
         private AppxInstaller installer;
 
@@ -25,6 +27,7 @@ namespace UWPX_Installer
         public MainWindow()
         {
             InitializeComponent();
+            LoadInfo();
         }
 
         #endregion
@@ -32,7 +35,7 @@ namespace UWPX_Installer
         #region --Set-, Get- Methods--
         private static string GetResourcePath(string filePath)
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), filePath);
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Path.Combine("Resources", filePath));
         }
 
         #endregion
@@ -58,7 +61,7 @@ namespace UWPX_Installer
         private void PrepInstaller()
         {
             install_btn.IsEnabled = false;
-            installer = new AppxInstaller(UWPX_APPX_BUNDLE_PATH, UWPX_CERTIFICATE_PATH);
+            installer = new AppxInstaller(info.appxBundlePath, info.certPath);
             installer.ProgressChanged += OnInstallProgressChanged;
             installer.StateChanged += OnInstallStateChanged;
             installer.InstallationComplete += OnInstallComplete;
@@ -78,7 +81,7 @@ namespace UWPX_Installer
             UpdateProgressInvoke(100, "Launching UWPX...");
             LauncherOptions options = new LauncherOptions
             {
-                TargetApplicationPackageFamilyName = UWPX_FAMILY_NAME
+                TargetApplicationPackageFamilyName = info.appFamilyName
             };
             if (await Launcher.LaunchUriAsync(new Uri("xmpp:"), options))
             {
@@ -88,6 +91,18 @@ namespace UWPX_Installer
             {
                 UpdateProgressInvoke(100, "Failed to launch UWPX");
             }
+        }
+
+        private void LoadInfo()
+        {
+            using (StreamReader r = new StreamReader(GetResourcePath(APPX_INFO_PATH)))
+            {
+                info = JsonConvert.DeserializeObject<ReleaseInfo>(r.ReadToEnd());
+            }
+            releaseDate_run.Text = info.releaseDate;
+            version_link.Inlines.Clear();
+            version_link.Inlines.Add(new Run(info.version));
+            version_link.NavigateUri = new Uri(info.changelogUrl);
         }
 
         #endregion
@@ -148,6 +163,21 @@ namespace UWPX_Installer
         private async void Lauch_btn_Click(object sender, RoutedEventArgs e)
         {
             await LauchUwpxAsync();
+        }
+
+        private async void twitter_link_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("https://twitter.com/UWPX_APP"));
+        }
+
+        private async void github_link_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("https://github.com/UWPX/UWPX-Client"));
+        }
+
+        private async void version_link_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri(info.changelogUrl));
         }
 
         #endregion

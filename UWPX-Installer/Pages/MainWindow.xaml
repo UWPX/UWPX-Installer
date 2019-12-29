@@ -47,24 +47,30 @@
                            TextWrapping="Wrap">
                     <Run FontWeight="Bold"
                          Text="Version:"/>
-                    <Hyperlink>
+                    <Hyperlink x:Name="version_link"
+                               Click="version_link_Click">
                         <Run Text="v.0.22.0.0"/>
                     </Hyperlink>
                     <LineBreak/>
                     <Run FontWeight="Bold"
                          Text="Release Date:"/>
-                    <Run Text="21.12.2019"/>
+                    <Run x:Name="releaseDate_run"
+                         Text="21.12.2019"/>
                     <LineBreak/>
                     <Run FontWeight="Bold"
                          Text="GitHub:"/>
-                    <Hyperlink>
-                        <Run Text="https://github.com/UWPX/UWPX-Client"/>
+                    <Hyperlink x:Name="github_link"
+                               Click="github_link_Click"
+                               NavigateUri="https://github.com/UWPX/UWPX-Client">
+                        https://github.com/UWPX/UWPX-Client
                     </Hyperlink>
                     <LineBreak/>
                     <Run FontWeight="Bold"
                          Text="Twitter:"/>
-                    <Hyperlink>
-                        <Run Text="https://twitter.com/UWPX_APP"/>
+                    <Hyperlink x:Name="twitter_link"
+                               Click="twitter_link_Click"
+                               NavigateUri="https://twitter.com/UWPX_APP">
+                        https://twitter.com/UWPX_APP
                     </Hyperlink>
                     <LineBreak/>
                     <Run FontWeight="Bold"
@@ -85,25 +91,25 @@
                     Width="100"
                     Height="40"
                     Click="Install_btn_Click"
-                    Content="Install UWPX"/>
+                    Content="Install"/>
             <Button x:Name="update_btn"
                     Width="100"
                     Height="40"
                     Margin="10,0,0,0"
                     Click="Update_btn_Click"
-                    Content="Update UWPX"/>
+                    Content="Update"/>
             <Button x:Name="lauch_btn"
                     Width="100"
                     Height="40"
                     Margin="10,0,0,0"
                     Click="Lauch_btn_Click"
-                    Content="Launch UWPX"/>
+                    Content="Launch"/>
         </StackPanel>
         <CheckBox x:Name="startOnceDone_chbx"
                   Grid.Row="2"
                   Margin="0,10,0,0"
                   HorizontalAlignment="Center"
-                  Content="Start once done"
+                  Content="Start after installation/update"
                   IsChecked="True"/>
         <TextBlock x:Name="status_tbx"
                    Grid.Row="3"
