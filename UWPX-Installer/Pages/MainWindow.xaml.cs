@@ -60,8 +60,8 @@ namespace UWPX_Installer
 
         private void PrepInstaller()
         {
-            install_btn.IsEnabled = false;
-            installer = new AppxInstaller(GetResourcePath(info.appxBundlePath), GetResourcePath(info.certPath));
+            DisableButtons();
+            installer = new AppxInstaller(GetResourcePath(info.appxBundlePath), GetResourcePath(info.certPath), GetResourcePath(info.dependeciesPath));
             installer.ProgressChanged += OnInstallProgressChanged;
             installer.StateChanged += OnInstallStateChanged;
             installer.InstallationComplete += OnInstallComplete;
@@ -105,6 +105,20 @@ namespace UWPX_Installer
             version_link.NavigateUri = new Uri(info.changelogUrl);
         }
 
+        private void EnableButtons()
+        {
+            install_btn.IsEnabled = true;
+            update_btn.IsEnabled = true;
+            lauch_btn.IsEnabled = true;
+        }
+
+        private void DisableButtons()
+        {
+            install_btn.IsEnabled = false;
+            update_btn.IsEnabled = false;
+            lauch_btn.IsEnabled = false;
+        }
+
         #endregion
 
         #region --Misc Methods (Protected)--
@@ -139,7 +153,7 @@ namespace UWPX_Installer
                 msg = "Installation failed with: " + args.RESULT.ErrorText;
             }
             UpdateProgressInvoke(100, msg);
-            Dispatcher.Invoke(() => install_btn.IsEnabled = true);
+            Dispatcher.Invoke(() => EnableButtons());
         }
 
         private async void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args)
@@ -147,7 +161,7 @@ namespace UWPX_Installer
             if (args.STATE == AppxInstallerState.ERROR)
             {
                 UpdateProgressInvoke(100, "Installation failed with a fatal error: " + (args.EXCEPTION is null ? "null" : args.EXCEPTION.Message));
-                Dispatcher.Invoke(() => install_btn.IsEnabled = true);
+                Dispatcher.Invoke(() => EnableButtons());
             }
             else if (args.STATE == AppxInstallerState.SUCCESS && Dispatcher.Invoke(() => startOnceDone_chbx.IsChecked) == true)
             {

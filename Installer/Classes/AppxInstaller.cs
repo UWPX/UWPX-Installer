@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Installer.Classes.Events;
@@ -13,6 +16,7 @@ namespace Installer.Classes
         #region --Attributes--
         private readonly string APPX_BUNDLE_PATH;
         private readonly string CERT_PATH;
+        private readonly string DEPENDENCIES_PATH;
 
         public AppxInstallerState state { get; private set; }
         private PackageManager pkgManager;
@@ -29,10 +33,11 @@ namespace Installer.Classes
         #endregion
         //--------------------------------------------------------Constructor:----------------------------------------------------------------\\
         #region --Constructors--
-        public AppxInstaller(string appxBundlePath, string certPath)
+        public AppxInstaller(string appxBundlePath, string certPath, string dependenciesPath)
         {
             APPX_BUNDLE_PATH = appxBundlePath;
             CERT_PATH = certPath;
+            DEPENDENCIES_PATH = dependenciesPath;
             state = AppxInstallerState.NOT_STARTED;
         }
 
@@ -46,6 +51,65 @@ namespace Installer.Classes
                 state = newState;
                 StateChanged?.Invoke(this, new StateChangedEventArgs(newState, e));
             }
+        }
+
+        private string GetArch()
+        {
+            string arch = Environment.GetEnvironmentVariable("Processor_Architecture");
+            if (string.Equals(arch, "x86"))
+            {
+                if (!(Environment.GetEnvironmentVariable("ProgramFiles(Arm)") is null))
+                {
+                    arch = "arm64";
+                }
+                else if (!(Environment.GetEnvironmentVariable("ProgramFiles(x86)") is null))
+                {
+                    arch = "amd64";
+                }
+            }
+            return arch.ToLowerInvariant();
+        }
+
+        private List<Uri> GetDependencies(string arch)
+        {
+            string archDepPath = Path.Combine(DEPENDENCIES_PATH, arch);
+            if (!Directory.Exists(archDepPath))
+            {
+                return new List<Uri>();
+            }
+
+            List<Uri> dependencies = new List<Uri>();
+            // Dependencies can have the .appx and .msix extension:
+            dependencies.AddRange(Directory.GetFiles(archDepPath, @"*.appx", SearchOption.AllDirectories).Select(x => new Uri(x)));
+            dependencies.AddRange(Directory.GetFiles(archDepPath, @"*.msix", SearchOption.AllDirectories).Select(x => new Uri(x)));
+            return dependencies;
+        }
+
+        /// <summary>
+        /// Based on the "Add-AppDevPackage.ps1" that generates when you publish an app with target sideloading.
+        /// </summary>
+        private List<Uri> GetDependencies()
+        {
+            List<Uri> dependencies = new List<Uri>();
+            string arch = GetArch();
+            if (string.Equals(arch, "x86") || string.Equals(arch, "amd64") || string.Equals(arch, "arm64"))
+            {
+                dependencies.AddRange(GetDependencies("x86"));
+            }
+            if (string.Equals(arch, "amd64"))
+            {
+                dependencies.AddRange(GetDependencies("x64"));
+            }
+            if (string.Equals(arch, "arm") || string.Equals(arch, "arm64"))
+            {
+                dependencies.AddRange(GetDependencies("arm"));
+            }
+            if (string.Equals(arch, "arm64"))
+            {
+                dependencies.AddRange(GetDependencies("arm64"));
+            }
+
+            return dependencies;
         }
 
         #endregion
@@ -142,7 +206,7 @@ namespace Installer.Classes
             {
                 pkgManager = new PackageManager();
             }
-            operation = pkgManager.AddPackageAsync(new Uri(APPX_BUNDLE_PATH), null, DeploymentOptions.ForceTargetApplicationShutdown);
+            operation = pkgManager.AddPackageAsync(new Uri(APPX_BUNDLE_PATH), GetDependencies(), DeploymentOptions.ForceTargetApplicationShutdown);
             HandleOperation();
         }
 
@@ -157,7 +221,7 @@ namespace Installer.Classes
             {
                 pkgManager = new PackageManager();
             }
-            operation = pkgManager.UpdatePackageAsync(new Uri(APPX_BUNDLE_PATH), null, DeploymentOptions.ForceTargetApplicationShutdown);
+            operation = pkgManager.UpdatePackageAsync(new Uri(APPX_BUNDLE_PATH), GetDependencies(), DeploymentOptions.ForceTargetApplicationShutdown);
             HandleOperation();
         }
 
