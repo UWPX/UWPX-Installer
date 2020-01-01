@@ -23,3 +23,5 @@ Since I do not own an official certificate which I can use to sign this installe
 Windows is warning you, that they are not able validate me as a developer.
 
 ## Examples
+![Example1](https://user-images.githubusercontent.com/11741404/71642536-23cfb280-2cad-11ea-95c2-d1ce0ffef3e8.png)
+![Example2](https://user-images.githubusercontent.com/11741404/71642510-9ee49900-2cac-11ea-987c-f2057cb47d93.gif)
