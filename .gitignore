@@ -288,4 +288,5 @@ __pycache__/
 *.xsd.cs
 
 # Installer Resources
-/UWPX-Installer/Resources
+/UWPX-Installer/Resources/*
+!/UWPX-Installer/Resources/README.md
