@@ -55,7 +55,7 @@ namespace UWPX_Installer
         private void Update()
         {
             PrepInstaller();
-            installer.Install();
+            installer.Update();
         }
 
         private void PrepInstaller()
