@@ -76,9 +76,7 @@
                     <Run FontWeight="Bold"
                          Text="Why this installer?"/>
                     <LineBreak/>
-                    <Run Text="This installer acts as an easy way to install UWPX and the required certificate. Since by default for UWP apps it's required to install their certificate first if you want to sideload them."/>
-                    <LineBreak/>
-                    <Run Text="Installing a certificate is to complex for the normal user. This installer automates this process."/>
+                    <Run Text="This installer acts as an easy way to install UWPX and the required certificate."/>
                 </TextBlock>
             </StackPanel>
         </Grid>
