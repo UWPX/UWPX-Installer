@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,6 +11,9 @@ using Installer.Classes;
 using Installer.Classes.Events;
 using Newtonsoft.Json;
 using UWPX_Installer.Classes;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
+using Windows.Management.Deployment;
 using Windows.System;
 
 namespace UWPX_Installer
@@ -79,18 +85,35 @@ namespace UWPX_Installer
         private async Task LauchUwpxAsync()
         {
             UpdateProgressInvoke(100, "Launching UWPX...");
-            LauncherOptions options = new LauncherOptions
+            AppListEntry app = await GetAppByPackageFamilyNameAsync(info.appFamilyName);
+            if (app is null)
             {
-                TargetApplicationPackageFamilyName = info.appFamilyName
-            };
-            if (await Launcher.LaunchUriAsync(new Uri("xmpp:"), options))
-            {
-                UpdateProgressInvoke(100, "Done");
+                UpdateProgressInvoke(100, "Failed to launch UWPX. App not found.");
             }
             else
             {
-                UpdateProgressInvoke(100, "Failed to launch UWPX");
+                await app.LaunchAsync();
+                UpdateProgressInvoke(100, "Done");
             }
+        }
+
+        private static async Task<AppListEntry> GetAppByPackageFamilyNameAsync(string packageFamilyName)
+        {
+            PackageManager pkgManager = new PackageManager();
+            Package pkg = pkgManager.FindPackage(packageFamilyName);
+            IEnumerable<Package> x = pkgManager.FindPackages();
+            foreach (Package p in x)
+            {
+                Debug.WriteLine(p.DisplayName + ": " + p.PublisherDisplayName);
+            }
+
+            if (pkg is null)
+            {
+                return null;
+            }
+
+            IReadOnlyList<AppListEntry> apps = await pkg.GetAppListEntriesAsync();
+            return apps.FirstOrDefault();
         }
 
         private void LoadInfo()
