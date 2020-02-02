@@ -217,6 +217,11 @@ namespace UWPX_Installer
             await Launcher.LaunchUriAsync(new Uri(info.changelogUrl));
         }
 
+        private async void store_btn_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("http://store.uwpx.org"));
+        }
+
         #endregion
     }
 }
