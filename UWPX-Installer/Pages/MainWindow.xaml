@@ -6,6 +6,7 @@
         Title="UWPX Installer"
         Width="800"
         Height="450"
+        ResizeMode="CanMinimize"
         mc:Ignorable="d">
 
     <Grid>
