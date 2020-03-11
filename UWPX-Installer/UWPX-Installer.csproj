@@ -73,4 +73,13 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Resources\Packaging_0.24.0.0_x86_x64_arm.appxbundle">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Resources\Packaging_0.24.0.0_x86_x64_arm.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
