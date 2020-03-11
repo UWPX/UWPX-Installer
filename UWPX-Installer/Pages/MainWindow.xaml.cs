@@ -132,7 +132,7 @@ namespace UWPX_Installer
         {
             install_btn.IsEnabled = true;
             update_btn.IsEnabled = true;
-            lauch_btn.IsEnabled = true;
+            // lauch_btn.IsEnabled = true;
         }
 
         private void DisableButtons()
