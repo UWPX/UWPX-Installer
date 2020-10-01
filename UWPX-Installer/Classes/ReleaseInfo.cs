@@ -6,7 +6,7 @@
         #region --Attributes--
         public string certPath;
         public string appxBundlePath;
-        public string dependeciesPath;
+        public string dependenciesPath;
         public string version;
         public string releaseDate;
         public string changelogUrl;

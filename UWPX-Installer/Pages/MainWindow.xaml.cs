@@ -67,7 +67,7 @@ namespace UWPX_Installer
         private void PrepInstaller()
         {
             DisableButtons();
-            installer = new AppxInstaller(GetResourcePath(info.appxBundlePath), GetResourcePath(info.certPath), GetResourcePath(info.dependeciesPath));
+            installer = new AppxInstaller(GetResourcePath(info.appxBundlePath), GetResourcePath(info.certPath), GetResourcePath(info.dependenciesPath));
             installer.ProgressChanged += OnInstallProgressChanged;
             installer.StateChanged += OnInstallStateChanged;
             installer.InstallationComplete += OnInstallComplete;

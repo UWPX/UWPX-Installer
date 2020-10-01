@@ -23,7 +23,7 @@ The `ReleaseInfo.json` file contains information required for installing your `.
 It supports the following configuration options:
 * **certPath**: The relative path to the `.cert` file of your `.appxbundle`.
 * **appxBundlePath**: The relative path to your `.appxbundle`.
-* **dependeciesPath**: The relativ path to your `Dependencies` folder.
+* **dependenciesPath**: The relativ path to your `Dependencies` folder.
 * **version**: A version string describing the current version of your `.appxbundle`
 * **releaseDate**: The release date of this `.appxbundle`.
 * **changelogUrl**: An URL to the changelog of the current version.
@@ -34,7 +34,7 @@ Such a `ReleaseInfo.json` file could look like:
 {
   "certPath": "Packaging_0.23.0.0_x86_x64_arm.cer",
   "appxBundlePath": "Packaging_0.23.0.0_x86_x64_arm.appxbundle",
-  "dependeciesPath": "Dependencies",
+  "dependenciesPath": "Dependencies",
   "version": "v.0.23.0.0",
   "releaseDate": "01.01.2019",
   "changelogUrl": "https://github.com/UWPX/UWPX-Client/releases/tag/v.0.23.0.0",
