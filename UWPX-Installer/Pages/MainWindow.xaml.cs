@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,6 +33,7 @@ namespace UWPX_Installer
         {
             InitializeComponent();
             LoadInfo();
+            _ = EnableButtonsAsync();
         }
 
         #endregion
@@ -82,13 +82,13 @@ namespace UWPX_Installer
             });
         }
 
-        private async Task LauchUwpxAsync()
+        private async Task LauchAppAsync()
         {
-            UpdateProgressInvoke(100, "Launching UWPX...");
-            AppListEntry app = await GetAppByPackageFamilyNameAsync(info.appFamilyName);
+            UpdateProgressInvoke(100, "Launching app...");
+            AppListEntry app = await GetAppByPackageFamilyNameAsync(info.packageFamilyName);
             if (app is null)
             {
-                UpdateProgressInvoke(100, "Failed to launch UWPX. App not found.");
+                UpdateProgressInvoke(100, "Failed to launch app. App not found.");
             }
             else
             {
@@ -100,13 +100,7 @@ namespace UWPX_Installer
         private static async Task<AppListEntry> GetAppByPackageFamilyNameAsync(string packageFamilyName)
         {
             PackageManager pkgManager = new PackageManager();
-            Package pkg = pkgManager.FindPackage(packageFamilyName);
-            IEnumerable<Package> x = pkgManager.FindPackages();
-            foreach (Package p in x)
-            {
-                Debug.WriteLine(p.DisplayName + ": " + p.PublisherDisplayName);
-            }
-
+            Package pkg = pkgManager.FindPackages(packageFamilyName).FirstOrDefault();
             if (pkg is null)
             {
                 return null;
@@ -128,11 +122,11 @@ namespace UWPX_Installer
             version_link.NavigateUri = new Uri(info.changelogUrl);
         }
 
-        private void EnableButtons()
+        private async Task EnableButtonsAsync()
         {
             install_btn.IsEnabled = true;
             update_btn.IsEnabled = true;
-            // lauch_btn.IsEnabled = true;
+            lauch_btn.IsEnabled = !(await GetAppByPackageFamilyNameAsync(info.packageFamilyName) is null);
         }
 
         private void DisableButtons()
@@ -160,7 +154,7 @@ namespace UWPX_Installer
             Update();
         }
 
-        private void OnInstallComplete(AppxInstaller sender, InstallationCompleteEventArgs args)
+        private async void OnInstallComplete(AppxInstaller sender, InstallationCompleteEventArgs args)
         {
             string msg;
             if (args.RESULT is null)
@@ -176,7 +170,7 @@ namespace UWPX_Installer
                 msg = "Installation failed with: " + args.RESULT.ErrorText;
             }
             UpdateProgressInvoke(100, msg);
-            Dispatcher.Invoke(() => EnableButtons());
+            await Dispatcher.Invoke(async () => await EnableButtonsAsync());
         }
 
         private async void OnInstallStateChanged(AppxInstaller sender, StateChangedEventArgs args)
@@ -184,11 +178,11 @@ namespace UWPX_Installer
             if (args.STATE == AppxInstallerState.ERROR)
             {
                 UpdateProgressInvoke(100, "Installation failed with a fatal error: " + (args.EXCEPTION is null ? "null" : args.EXCEPTION.Message));
-                Dispatcher.Invoke(() => EnableButtons());
+                await Dispatcher.Invoke(async () => await EnableButtonsAsync());
             }
             else if (args.STATE == AppxInstallerState.SUCCESS && Dispatcher.Invoke(() => startOnceDone_chbx.IsChecked) == true)
             {
-                await LauchUwpxAsync();
+                await LauchAppAsync();
             }
         }
 
@@ -199,7 +193,7 @@ namespace UWPX_Installer
 
         private async void Lauch_btn_Click(object sender, RoutedEventArgs e)
         {
-            await LauchUwpxAsync();
+            await LauchAppAsync();
         }
 
         private async void twitter_link_Click(object sender, RoutedEventArgs e)

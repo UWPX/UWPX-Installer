@@ -10,7 +10,7 @@
         public string version;
         public string releaseDate;
         public string changelogUrl;
-        public string appFamilyName;
+        public string packageFamilyName;
 
         #endregion
         //--------------------------------------------------------Constructor:----------------------------------------------------------------\\
